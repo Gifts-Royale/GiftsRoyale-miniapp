@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Испытай удачу</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{--bg:#0f1220;--card:#171a2a;--text:#ffffff;--muted:#b9c0d0;--accent:#57d2a3}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Arial}
+    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{width:100%;max-width:420px;background:var(--card);border-radius:20px;padding:22px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+    h1{margin:0 0 6px;font-size:24px}
+    p{margin:10px 0;color:var(--muted);line-height:1.5}
+    .case{margin:18px 0 10px;height:170px;border:2px dashed #36405f;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#9fb0d6}
+    .btn{width:100%;padding:14px 16px;border:0;border-radius:14px;font-weight:700;font-size:16px;cursor:pointer;background:var(--accent);color:#0b1320;transition:transform .04s}
+    .btn:active{transform:scale(.99)}
+    .row{display:flex;gap:10px;margin-top:10px}
+    .row .btn{flex:1}
+    .result{margin-top:10px;padding:12px;border-radius:12px;background:#101526;color:#a9ffdd;display:none}
+    .hint{font-size:12px;color:#7b86a7;margin-top:8px}
+    .spin{animation:spin 1s linear infinite}
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>🎁 Испытай удачу</h1>
+      <p>Нажми кнопку ниже — откроем кейс и посмотрим, что выпадет!</p>
+      <div id="case" class="case">Кейс закрыт 🔒</div>
+
+      <button id="openBtn" class="btn">Открыть кейс</button>
+      <div class="row">
+        <button id="shareBtn" class="btn" style="background:#58a6ff;color:#071422">Поделиться</button>
+        <button id="closeBtn" class="btn" style="background:#ff9f5a;color:#261306">Закрыть</button>
+      </div>
+
+      <div id="result" class="result"></div>
+      <div class="hint">Мини-приложение открыто внутри Telegram</div>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    tg?.ready();
+
+    if (tg?.themeParams) {
+      document.documentElement.style.setProperty('--bg', tg.themeParams.bg_color || '#0f1220');
+      document.documentElement.style.setProperty('--text', tg.themeParams.text_color || '#ffffff');
+      document.documentElement.style.setProperty('--card', tg.themeParams.secondary_bg_color || '#171a2a');
+      document.documentElement.style.setProperty('--accent', tg.themeParams.button_color || '#57d2a3');
+      document.documentElement.style.setProperty('--muted', tg.themeParams.hint_color || '#b9c0d0');
+    }
+
+    const prizes = [
+      {title:'100 ⭐ звёзд', rare:'обычный'},
+      {title:'Стикерпак', rare:'обычный'},
+      {title:'VIP-роль на день', rare:'редкий'},
+      {title:'Промокод -50%', rare:'редкий'},
+      {title:'🎉 Суперприз: 500 ⭐', rare:'легендарный'}
+    ];
+
+    const caseBox = document.getElementById('case');
+    const openBtn = document.getElementById('openBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const resultEl = document.getElementById('result');
+
+    function pickPrize(){
+      const pool = [
+        ...Array(40).fill(prizes[0]),
+        ...Array(30).fill(prizes[1]),
+        ...Array(20).fill(prizes[2]),
+        ...Array(9).fill(prizes[3]),
+        ...Array(1).fill(prizes[4]),
+      ];
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
+
+    openBtn.onclick = async () => {
+      caseBox.textContent = 'Кейс крутится…';
+      caseBox.classList.add('spin');
+      resultEl.style.display = 'none';
+
+      await new Promise(r => setTimeout(r, 1200));
+      caseBox.classList.remove('spin');
+
+      const win = pickPrize();
+      caseBox.textContent = 'Кейс открыт ✅';
+      resultEl.innerHTML = `Выпало: <b>${win.title}</b> <br><small>Редкость: ${win.rare}</small>`;
+      resultEl.style.display = 'block';
+
+      try { tg?.sendData?.(JSON.stringify({type:'open_case', prize: win.title, rare: win.rare})); } catch(e) {}
+      try { tg?.showPopup?.({title:'Готово', message:\`Ваш приз: ${win.title}\`, buttons:[{type:'ok'}]}); } catch(e) {}
+    };
+
+    closeBtn.onclick = () => {
+      try { tg?.close(); } catch(e) { alert('Окно мини-приложения было бы закрыто в Telegram.'); }
+    };
+
+    shareBtn.onclick = () => {
+      try { tg?.shareUrl?.('https://t.me/'); } catch(e) { alert('Поделиться можно из Telegram.'); }
+    };
+  </script>
+</body>
+</html>
