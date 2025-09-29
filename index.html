@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
+  <!-- статичный масштаб без зума -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Gifts Royale — Кейсы</title>
   <style>
@@ -33,7 +34,7 @@
       background:rgba(245,207,116,.12);border:1px solid var(--border);font-weight:800}
     .pill .num{min-width:28px;text-align:right}
 
-    /* chips */
+    /* chips (секционные кнопки) */
     .chipbar{
       position:sticky;top:60px;z-index:19;display:flex;gap:10px;padding:10px 14px;overflow-x:auto;
       background:linear-gradient(180deg,var(--panel),var(--panel2));border-bottom:1px solid var(--border)
@@ -41,20 +42,14 @@
     .chipbar::-webkit-scrollbar{display:none}
     .chip{
       padding:10px 14px;border-radius:999px;white-space:nowrap;cursor:pointer;
-      border:1px solid var(--border);color:var(--muted);font-weight:800;user-select:none;
-      transition:background .15s, color .15s, border-color .15s, box-shadow .15s;
-      background:transparent;
+      border:1px solid var(--border);color:var(--muted);font-weight:800;user-select:none
     }
-    /* активная — вся кнопка белая; !important для надёжности */
-    .chip.active{
-      background:#ffffff !important; color:#111215 !important; border-color:#ffffff !important;
-      box-shadow:0 2px 12px rgba(255,255,255,.18) !important;
-    }
+    .chip.active{color:var(--text);box-shadow:inset 0 0 0 1px rgba(245,207,116,.25)}
 
     .content{flex:1;padding:14px;max-width:1100px;margin:0 auto;width:100%}
     h2.section{
       margin:18px 0 10px;text-align:center;font-size:14px;letter-spacing:1.6px;
-      scroll-margin-top:120px;
+      scroll-margin-top:120px; /* чтобы заголовок не прятался под шапкой */
     }
 
     /* сетка: всегда 2 карточки в ряд */
@@ -83,17 +78,6 @@
     .tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;color:var(--muted);font-size:12px;font-weight:800}
     .tab.active{color:var(--text)}
     .ico{font-size:18px}
-
-    /* плавающая кнопка "ВВЕРХ" */
-    .backtop{
-      position:fixed; right:14px; bottom:88px; z-index:30;
-      padding:8px 10px; border-radius:12px; font-weight:900; font-size:12px;
-      border:1px solid rgba(255,255,255,.25); color:#fff;
-      background:rgba(170,180,190,.22); backdrop-filter:blur(6px);
-      opacity:0; pointer-events:none; transform:translateY(8px);
-      transition:opacity .2s, transform .2s;
-    }
-    .backtop.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
   </style>
 </head>
 <body>
@@ -202,11 +186,8 @@
     </nav>
   </div>
 
-  <!-- плавающая кнопка вверх -->
-  <button id="backTop" class="backtop" aria-label="Вверх">ВВЕРХ ↑</button>
-
   <script>
-    // --- клики по чипам: прокрутка к секциям ---
+    // --- клики по чипам: плавная прокрутка к секциям ---
     const chipbar = document.getElementById('chipbar');
     const chips = Array.from(chipbar.querySelectorAll('.chip'));
 
@@ -234,7 +215,7 @@
       '#sec-standard','#sec-gold','#sec-allornothing','#sec-expensive'
     ].map(sel => document.querySelector(sel)).filter(Boolean);
     const topChip = mapTargetToChip.get('#top');
-    const stickyOffset = 120;
+    const stickyOffset = 120; // совпадает со scroll-margin-top у h2
 
     const io = new IntersectionObserver((entries)=>{
       let best = null, bestRatio = 0;
@@ -252,13 +233,6 @@
     }, { root:null, rootMargin:`-${stickyOffset}px 0px -60% 0px`, threshold:[0.2,0.4,0.6,0.8] });
 
     sections.forEach(sec => io.observe(sec));
-
-    // --- плавающая кнопка "ВВЕРХ" ---
-    const backTop = document.getElementById('backTop');
-    backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-    const toggleBackTop = ()=> backTop.classList.toggle('show', window.scrollY > 2);
-    toggleBackTop();
-    window.addEventListener('scroll', toggleBackTop, {passive:true});
   </script>
 </body>
 </html>
