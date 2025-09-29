@@ -16,6 +16,7 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+    html{scroll-behavior:smooth} /* плавная прокрутка */
     body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
     .app{min-height:100%;display:flex;flex-direction:column}
 
@@ -33,13 +34,14 @@
 
     /* chips */
     .chipbar{display:flex;gap:10px;padding:10px 14px;overflow-x:auto;
-      background:linear-gradient(180deg,var(--panel),var(--panel2));border-bottom:1px solid var(--border)}
-    .chip{padding:10px 14px;border-radius:999px;white-space:nowrap;cursor:default;
-      border:1px solid var(--border);color:var(--muted);font-weight:800}
+      background:linear-gradient(180deg,var(--panel),var(--panel2));border-bottom:1px solid var(--border);position:sticky;top:60px;z-index:19}
+    .chip{padding:10px 14px;border-radius:999px;white-space:nowrap;cursor:pointer;
+      border:1px solid var(--border);color:var(--muted);font-weight:800;user-select:none}
     .chip.active{color:var(--text);box-shadow:inset 0 0 0 1px rgba(245,207,116,.25)}
+    .chipbar::-webkit-scrollbar{display:none}
 
     .content{flex:1;padding:14px;max-width:1100px;margin:0 auto;width:100%}
-    h2.section{margin:18px 0 10px;text-align:center;font-size:14px;letter-spacing:1.6px}
+    h2.section{margin:18px 0 10px;text-align:center;font-size:14px;letter-spacing:1.6px;scroll-margin-top:120px} /* чтобы не пряталось под шапкой */
 
     /* сетка: всегда 2 карточки в ряд */
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
@@ -62,7 +64,7 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="app" id="top">
     <!-- Шапка -->
     <div class="topbar">
       <div class="logo">GS</div>
@@ -71,19 +73,22 @@
       <div class="pill"><span>⭐</span><span class="num" id="stars">120</span></div>
     </div>
 
-    <!-- Вкладки (для вида, не кликабельные) -->
-    <div class="chipbar">
-      <div class="chip active">Все</div>
-      <div class="chip">Бесплатные</div>
-      <div class="chip">Лимитированные</div>
-      <div class="chip">Популярные</div>
-      <div class="chip">Новинки</div>
+    <!-- Кнопки-навигация по разделам -->
+    <div class="chipbar" id="chipbar">
+      <div class="chip active" data-target="#top">Все</div>
+      <div class="chip" data-target="#sec-free">Бесплатные кейсы</div>
+      <div class="chip" data-target="#sec-cheap">Дешёвые кейсы</div>
+      <div class="chip" data-target="#sec-nft">Только NFT-кейсы</div>
+      <div class="chip" data-target="#sec-exclusive">Эксклюзивные кейсы</div>
+      <div class="chip" data-target="#sec-standard">Стандартные кейсы</div>
+      <div class="chip" data-target="#sec-gold">Кейсы за золото</div>
+      <div class="chip" data-target="#sec-allornothing">Всё или ничего кейсы</div>
+      <div class="chip" data-target="#sec-expensive">Дорогие кейсы</div>
     </div>
 
     <div class="content">
-
-      <!-- 1. БЕСПЛАТНЫЕ КЕЙСЫ -->
-      <h2 class="section">БЕСПЛАТНЫЕ КЕЙСЫ</h2>
+      <!-- 1 -->
+      <h2 class="section" id="sec-free">БЕСПЛАТНЫЕ КЕЙСЫ</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #1</div><div class="desc">Бонус за промокод</div><div class="price">БЕСПЛАТНО</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #2</div><div class="desc">Ежедневный бонус</div><div class="price">БЕСПЛАТНО</div></div>
@@ -91,8 +96,8 @@
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #4</div><div class="desc">За пополнение</div><div class="price">БЕСПЛАТНО</div></div>
       </div>
 
-      <!-- 2. ДЕШЁВЫЕ КЕЙСЫ -->
-      <h2 class="section">ДЕШЁВЫЕ КЕЙСЫ</h2>
+      <!-- 2 -->
+      <h2 class="section" id="sec-cheap">ДЕШЁВЫЕ КЕЙСЫ</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #5</div><div class="desc">Начальный</div><div class="price">5 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #6</div><div class="desc">Мини</div><div class="price">10 ⭐</div></div>
@@ -100,8 +105,8 @@
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #8</div><div class="desc">Базовый</div><div class="price">15 ⭐</div></div>
       </div>
 
-      <!-- 3. ТОЛЬКО NFT-КЕЙСЫ -->
-      <h2 class="section">ТОЛЬКО NFT-КЕЙСЫ</h2>
+      <!-- 3 -->
+      <h2 class="section" id="sec-nft">ТОЛЬКО NFT-КЕЙСЫ</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #9</div><div class="desc">NFT-предметы</div><div class="price">25 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #10</div><div class="desc">Коллекция A</div><div class="price">30 ⭐</div></div>
@@ -109,8 +114,8 @@
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #12</div><div class="desc">Редкие NFT</div><div class="price">40 ⭐</div></div>
       </div>
 
-      <!-- 4. ЭКСКЛЮЗИВНЫЕ КЕЙСЫ -->
-      <h2 class="section">ЭКСКЛЮЗИВНЫЕ КЕЙСЫ</h2>
+      <!-- 4 -->
+      <h2 class="section" id="sec-exclusive">ЭКСКЛЮЗИВНЫЕ КЕЙСЫ</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #13</div><div class="desc">Эксклюзив 1</div><div class="price">60 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #14</div><div class="desc">Эксклюзив 2</div><div class="price">70 ⭐</div></div>
@@ -118,8 +123,8 @@
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #16</div><div class="desc">Эксклюзив 4</div><div class="price">90 ⭐</div></div>
       </div>
 
-      <!-- 5. СТАНДАРТНЫЕ КЕЙСЫ -->
-      <h2 class="section">СТАНДАРТНЫЕ КЕЙСЫ</h2>
+      <!-- 5 -->
+      <h2 class="section" id="sec-standard">СТАНДАРТНЫЕ КЕЙСЫ</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #17</div><div class="desc">Стандарт A</div><div class="price">20 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #18</div><div class="desc">Стандарт B</div><div class="price">25 ⭐</div></div>
@@ -127,8 +132,8 @@
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #20</div><div class="desc">Стандарт D</div><div class="price">35 ⭐</div></div>
       </div>
 
-      <!-- 6. КЕЙСЫ ЗА ЗОЛОТО -->
-      <h2 class="section">КЕЙСЫ ЗА ЗОЛОТО</h2>
+      <!-- 6 -->
+      <h2 class="section" id="sec-gold">КЕЙСЫ ЗА ЗОЛОТО</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #21</div><div class="desc">Gold Pack I</div><div class="price">ЗОЛОТО</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #22</div><div class="desc">Gold Pack II</div><div class="price">ЗОЛОТО</div></div>
@@ -136,8 +141,8 @@
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #24</div><div class="desc">Gold Pack IV</div><div class="price">ЗОЛОТО</div></div>
       </div>
 
-      <!-- 7. ВСЁ ИЛИ НИЧЕГО КЕЙСЫ -->
-      <h2 class="section">ВСЁ ИЛИ НИЧЕГО КЕЙСЫ</h2>
+      <!-- 7 -->
+      <h2 class="section" id="sec-allornothing">ВСЁ ИЛИ НИЧЕГО КЕЙСЫ</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #25</div><div class="desc">Риск A</div><div class="price">50 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #26</div><div class="desc">Риск B</div><div class="price">75 ⭐</div></div>
@@ -145,16 +150,15 @@
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #28</div><div class="desc">Риск D</div><div class="price">150 ⭐</div></div>
       </div>
 
-      <!-- 8. ДОРОГИЕ КЕЙСЫ -->
-      <h2 class="section">ДОРОГИЕ КЕЙСЫ</h2>
+      <!-- 8 -->
+      <h2 class="section" id="sec-expensive">ДОРОГИЕ КЕЙСЫ</h2>
       <div class="grid">
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #29</div><div class="desc">Premium A</div><div class="price">200 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #30</div><div class="desc">Premium B</div><div class="price">250 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #31</div><div class="desc">Premium C</div><div class="price">300 ⭐</div></div>
         <div class="card"><div class="thumb">Заглушка</div><div class="name">Кейс #32</div><div class="desc">Premium D</div><div class="price">400 ⭐</div></div>
       </div>
-
-    </div><!-- /content -->
+    </div>
 
     <nav class="tabbar">
       <div class="tab"><div class="ico">🏆</div>Конкурсы</div>
@@ -164,5 +168,20 @@
       <div class="tab"><div class="ico">👤</div>Профиль</div>
     </nav>
   </div>
+
+  <script>
+    // Прокрутка к разделам по клику на чип
+    const chipbar = document.getElementById('chipbar');
+    chipbar.addEventListener('click', (e)=>{
+      const chip = e.target.closest('.chip'); if(!chip) return;
+      chipbar.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      const sel = chip.dataset.target;
+      if (!sel) return;
+      const el = document.querySelector(sel);
+      if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      else window.scrollTo({top:0, behavior:'smooth'}); // на случай «Все»
+    });
+  </script>
 </body>
 </html>
