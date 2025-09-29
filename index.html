@@ -16,14 +16,16 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
-    html{scroll-behavior:smooth} /* плавная прокрутка */
+    html{scroll-behavior:smooth}
     body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
     .app{min-height:100%;display:flex;flex-direction:column}
 
     /* topbar */
-    .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+    .topbar{
+      position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
       padding:12px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));
-      border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+      border-bottom:1px solid var(--border);box-shadow:var(--shadow)
+    }
     .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
       background:rgba(245,207,116,.15);border:1px solid var(--border);font-weight:800}
     .brand strong{font-size:18px}
@@ -32,32 +34,47 @@
       background:rgba(245,207,116,.12);border:1px solid var(--border);font-weight:800}
     .pill .num{min-width:28px;text-align:right}
 
-    /* chips */
-    .chipbar{display:flex;gap:10px;padding:10px 14px;overflow-x:auto;
-      background:linear-gradient(180deg,var(--panel),var(--panel2));border-bottom:1px solid var(--border);position:sticky;top:60px;z-index:19}
-    .chip{padding:10px 14px;border-radius:999px;white-space:nowrap;cursor:pointer;
-      border:1px solid var(--border);color:var(--muted);font-weight:800;user-select:none}
-    .chip.active{color:var(--text);box-shadow:inset 0 0 0 1px rgba(245,207,116,.25)}
+    /* chips (секционные кнопки) */
+    .chipbar{
+      position:sticky;top:60px;z-index:19;display:flex;gap:10px;padding:10px 14px;overflow-x:auto;
+      background:linear-gradient(180deg,var(--panel),var(--panel2));border-bottom:1px solid var(--border)
+    }
     .chipbar::-webkit-scrollbar{display:none}
+    .chip{
+      padding:10px 14px;border-radius:999px;white-space:nowrap;cursor:pointer;
+      border:1px solid var(--border);color:var(--muted);font-weight:800;user-select:none
+    }
+    .chip.active{color:var(--text);box-shadow:inset 0 0 0 1px rgba(245,207,116,.25)}
 
     .content{flex:1;padding:14px;max-width:1100px;margin:0 auto;width:100%}
-    h2.section{margin:18px 0 10px;text-align:center;font-size:14px;letter-spacing:1.6px;scroll-margin-top:120px} /* чтобы не пряталось под шапкой */
+    h2.section{
+      margin:18px 0 10px;text-align:center;font-size:14px;letter-spacing:1.6px;
+      scroll-margin-top:120px; /* чтобы заголовок не прятался под шапкой */
+    }
 
     /* сетка: всегда 2 карточки в ряд */
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 
-    .card{background:linear-gradient(180deg,var(--card),var(--card2));
+    .card{
+      background:linear-gradient(180deg,var(--card),var(--card2));
       border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);
-      padding:12px;display:flex;flex-direction:column;gap:10px}
-    .thumb{height:160px;border-radius:14px;position:relative;border:1px dashed rgba(245,207,116,.35);
-      background:linear-gradient(180deg,#0f1116,#0c0e12);display:grid;place-items:center;color:var(--muted);font-size:12px}
+      padding:12px;display:flex;flex-direction:column;gap:10px
+    }
+    .thumb{
+      height:160px;border-radius:14px;position:relative;border:1px dashed rgba(245,207,116,.35);
+      background:linear-gradient(180deg,#0f1116,#0c0e12);
+      display:grid;place-items:center;color:var(--muted);font-size:12px
+    }
     .name{font-weight:900}
     .desc{font-size:12px;color:var(--muted)}
     .price{font-weight:900;color:var(--gold)}
 
     /* bottom nav */
-    .tabbar{position:sticky;bottom:0;z-index:20;background:linear-gradient(180deg,var(--panel),var(--panel2));
-      border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px}
+    .tabbar{
+      position:sticky;bottom:0;z-index:20;
+      background:linear-gradient(180deg,var(--panel),var(--panel2));border-top:1px solid var(--border);
+      display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px
+    }
     .tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;color:var(--muted);font-size:12px;font-weight:800}
     .tab.active{color:var(--text)}
     .ico{font-size:18px}
@@ -170,18 +187,52 @@
   </div>
 
   <script>
-    // Прокрутка к разделам по клику на чип
+    // --- клики по чипам: плавная прокрутка к секциям ---
     const chipbar = document.getElementById('chipbar');
+    const chips = Array.from(chipbar.querySelectorAll('.chip'));
+
     chipbar.addEventListener('click', (e)=>{
       const chip = e.target.closest('.chip'); if(!chip) return;
-      chipbar.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-      chip.classList.add('active');
+      setActiveChip(chip);
       const sel = chip.dataset.target;
-      if (!sel) return;
+      if (!sel || sel === '#top') {
+        window.scrollTo({top:0, behavior:'smooth'});
+        return;
+      }
       const el = document.querySelector(sel);
       if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-      else window.scrollTo({top:0, behavior:'smooth'}); // на случай «Все»
     });
+
+    function setActiveChip(chip) {
+      chips.forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+    }
+
+    // --- авто-подсветка при ручной прокрутке ---
+    const mapTargetToChip = new Map(chips.map(c => [c.dataset.target || '#top', c]));
+    const sections = [
+      '#sec-free','#sec-cheap','#sec-nft','#sec-exclusive',
+      '#sec-standard','#sec-gold','#sec-allornothing','#sec-expensive'
+    ].map(sel => document.querySelector(sel)).filter(Boolean);
+    const topChip = mapTargetToChip.get('#top');
+    const stickyOffset = 120; // совпадает со scroll-margin-top у h2
+
+    const io = new IntersectionObserver((entries)=>{
+      let best = null, bestRatio = 0;
+      for (const e of entries) {
+        if (e.isIntersecting && e.intersectionRatio > bestRatio) {
+          best = e.target; bestRatio = e.intersectionRatio;
+        }
+      }
+      if (best) {
+        const chip = mapTargetToChip.get('#' + best.id);
+        if (chip) setActiveChip(chip);
+      } else if (window.scrollY < 10 && topChip) {
+        setActiveChip(topChip);
+      }
+    }, { root:null, rootMargin:`-${stickyOffset}px 0px -60% 0px`, threshold:[0.2,0.4,0.6,0.8] });
+
+    sections.forEach(sec => io.observe(sec));
   </script>
 </body>
 </html>
