@@ -15,43 +15,40 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
-    body{
-      background:linear-gradient(180deg,var(--bg),var(--bg2));
-      color:var(--text);
-    }
+    body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
     .app{min-height:100%;display:flex;flex-direction:column}
     .topbar{
-      position:sticky;top:0;z-index:20;
-      display:flex;align-items:center;gap:12px;
+      position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
       padding:12px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));
       border-bottom:1px solid var(--border); box-shadow:var(--shadow)
     }
-    .logo{
-      width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
-      background:rgba(245,207,116,.15);border:1px solid var(--border);font-weight:800
-    }
+    .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+      background:rgba(245,207,116,.15);border:1px solid var(--border);font-weight:800}
     .brand strong{font-size:18px}
     .grow{flex:1}
-    .pill{
-      display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;
-      background:rgba(245,207,116,.12);border:1px solid var(--border); font-weight:800
-    }
+    .pill{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;
+      background:rgba(245,207,116,.12);border:1px solid var(--border);font-weight:800}
     .pill .num{min-width:28px;text-align:right}
+
     .chipbar{
       display:flex;gap:10px;padding:10px 14px;overflow-x:auto;
-      background:linear-gradient(180deg,var(--panel),var(--panel2));border-bottom:1px solid var(--border)
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border-bottom:1px solid var(--border)
     }
     .chip{padding:10px 14px;border-radius:999px;white-space:nowrap;cursor:pointer;
-      border:1px solid var(--border); color:var(--muted); font-weight:800}
+      border:1px solid var(--border);color:var(--muted);font-weight:800}
     .chip.active{color:var(--text);box-shadow:inset 0 0 0 1px rgba(245,207,116,.25)}
+
     .content{flex:1;padding:14px;max-width:1100px;margin:0 auto;width:100%}
     h2.section{text-align:center;margin:14px 0;font-size:14px;letter-spacing:1.5px}
-    /* сетка ровно 2 карточки в ряд */
+
+    /* РОВНО 2 карточки в ряд */
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+
     .card{
       background:linear-gradient(180deg,var(--card),var(--card2));
-      border:1px solid var(--border); border-radius:18px;
-      box-shadow:var(--shadow); padding:12px; display:flex;flex-direction:column;gap:10px
+      border:1px solid var(--border);border-radius:18px;
+      box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:10px
     }
     .thumb{
       height:160px;border-radius:14px;position:relative;
@@ -62,12 +59,15 @@
     .name{font-weight:900}
     .desc{font-size:12px;color:var(--muted)}
     .price{font-weight:900;color:var(--gold)}
+
     .tabbar{
       position:sticky;bottom:0;z-index:20;
-      background:linear-gradient(180deg,var(--panel),var(--panel2));border-top:1px solid var(--border);
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border-top:1px solid var(--border);
       display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px
     }
-    .tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;color:var(--muted);font-size:12px;font-weight:800}
+    .tab{display:flex;flex-direction:column;align-items:center;gap:4px;
+      padding:6px 2px;color:var(--muted);font-size:12px;font-weight:800}
     .tab.active{color:var(--text)}
     .ico{font-size:18px}
   </style>
@@ -80,6 +80,7 @@
       <div class="grow"></div>
       <div class="pill"><span>⭐</span><span class="num" id="stars">120</span></div>
     </div>
+
     <div class="chipbar">
       <div class="chip active">Все</div>
       <div class="chip">Бесплатные</div>
@@ -87,20 +88,12 @@
       <div class="chip">Популярные</div>
       <div class="chip">Новинки</div>
     </div>
+
     <div class="content">
       <h2 class="section">ВСЕ КЕЙСЫ</h2>
-      <div class="grid">
-        <!-- 16 карточек -->
-        ${Array.from({length:16}).map((_,i)=>`
-          <div class="card">
-            <div class="thumb">Заглушка</div>
-            <div class="name">Кейс #${i+1}</div>
-            <div class="desc">Описание кейса</div>
-            <div class="price">${i%3===0 ? 'БЕСПЛАТНО' : (10+i*5)+' ⭐'}</div>
-          </div>
-        `).join('')}
-      </div>
+      <div class="grid" id="grid"></div>
     </div>
+
     <nav class="tabbar">
       <div class="tab"><div class="ico">🏆</div>Конкурсы</div>
       <div class="tab"><div class="ico">⚡</div>Апгрейд</div>
@@ -109,5 +102,22 @@
       <div class="tab"><div class="ico">👤</div>Профиль</div>
     </nav>
   </div>
+
+  <!-- Небольшой JS только чтобы вставить 16 карточек -->
+  <script>
+    const grid = document.getElementById('grid');
+    const cards = Array.from({length: 16}).map((_, i) => {
+      const price = (i % 3 === 0) ? 'БЕСПЛАТНО' : (10 + i * 5) + ' ⭐';
+      return `
+        <div class="card">
+          <div class="thumb">Заглушка</div>
+          <div class="name">Кейс #${i + 1}</div>
+          <div class="desc">Описание кейса</div>
+          <div class="price">${price}</div>
+        </div>
+      `;
+    }).join('');
+    grid.innerHTML = cards;
+  </script>
 </body>
 </html>
