@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <!-- статичный масштаб без зума -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Gifts Royale — Кейсы</title>
   <style>
@@ -34,7 +33,7 @@
       background:rgba(245,207,116,.12);border:1px solid var(--border);font-weight:800}
     .pill .num{min-width:28px;text-align:right}
 
-    /* chips (секционные кнопки) */
+    /* chips */
     .chipbar{
       position:sticky;top:60px;z-index:19;display:flex;gap:10px;padding:10px 14px;overflow-x:auto;
       background:linear-gradient(180deg,var(--panel),var(--panel2));border-bottom:1px solid var(--border)
@@ -46,16 +45,16 @@
       transition:background .15s, color .15s, border-color .15s, box-shadow .15s;
       background:transparent;
     }
-    /* активная — выделяем КНОПКУ полностью белым */
+    /* активная — вся кнопка белая; !important для надёжности */
     .chip.active{
-      background:#ffffff; color:#111215; border-color:#ffffff;
-      box-shadow:0 2px 10px rgba(255,255,255,.15);
+      background:#ffffff !important; color:#111215 !important; border-color:#ffffff !important;
+      box-shadow:0 2px 12px rgba(255,255,255,.18) !important;
     }
 
     .content{flex:1;padding:14px;max-width:1100px;margin:0 auto;width:100%}
     h2.section{
       margin:18px 0 10px;text-align:center;font-size:14px;letter-spacing:1.6px;
-      scroll-margin-top:120px; /* чтобы заголовок не прятался под шапкой */
+      scroll-margin-top:120px;
     }
 
     /* сетка: всегда 2 карточки в ряд */
@@ -87,7 +86,7 @@
 
     /* плавающая кнопка "ВВЕРХ" */
     .backtop{
-      position:fixed; right:14px; bottom:84px; z-index:30;
+      position:fixed; right:14px; bottom:88px; z-index:30;
       padding:8px 10px; border-radius:12px; font-weight:900; font-size:12px;
       border:1px solid rgba(255,255,255,.25); color:#fff;
       background:rgba(170,180,190,.22); backdrop-filter:blur(6px);
@@ -207,7 +206,7 @@
   <button id="backTop" class="backtop" aria-label="Вверх">ВВЕРХ ↑</button>
 
   <script>
-    // --- клики по чипам: плавная прокрутка к секциям ---
+    // --- клики по чипам: прокрутка к секциям ---
     const chipbar = document.getElementById('chipbar');
     const chips = Array.from(chipbar.querySelectorAll('.chip'));
 
@@ -235,7 +234,7 @@
       '#sec-standard','#sec-gold','#sec-allornothing','#sec-expensive'
     ].map(sel => document.querySelector(sel)).filter(Boolean);
     const topChip = mapTargetToChip.get('#top');
-    const stickyOffset = 120; // совпадает со scroll-margin-top у h2
+    const stickyOffset = 120;
 
     const io = new IntersectionObserver((entries)=>{
       let best = null, bestRatio = 0;
